@@ -12,6 +12,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+src/main/resources/client_secrets.json
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
 
