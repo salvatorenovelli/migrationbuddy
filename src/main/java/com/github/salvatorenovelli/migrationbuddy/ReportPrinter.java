@@ -1,8 +1,12 @@
 package com.github.salvatorenovelli.migrationbuddy;
 
+import com.github.salvatorenovelli.migrationbuddy.model.UrlStats;
 import com.google.api.services.analyticsreporting.v4.model.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 class ReportPrinter {
     private GetReportsResponse response;
@@ -10,6 +14,27 @@ class ReportPrinter {
     public ReportPrinter(GetReportsResponse response) {
         this.response = response;
     }
+
+    public Map<String, UrlStats> getStatsPerUrl() {
+
+        return response.getReports().stream()
+                .flatMap(report -> report.getData().getRows().stream())
+                .map(this::toUrlstats)
+                .collect(Collectors.toMap(UrlStats::getUrl, Function.identity()));
+
+    }
+
+    private UrlStats toUrlstats(ReportRow reportRow) {
+        List<String> dimensions = reportRow.getDimensions();
+
+        List<String> values = reportRow.getMetrics().get(0).getValues();
+        return new UrlStats(dimensions.get(0), Long.valueOf(values.get(0)), Long.valueOf(values.get(1)));
+    }
+//
+//    private UrlStats toUrlstats(List<String> values) {
+//        return new UrlStats(values.get(0), Long.valueOf(values.get(1)), Long.valueOf(values.get(2)));
+//    }
+
 
     public void print() {
         for (Report report : response.getReports()) {
