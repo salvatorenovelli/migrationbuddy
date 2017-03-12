@@ -28,7 +28,7 @@ public class AnalyticsService {
         analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
-    public GetReportsResponse run(String view_id, DateRange dateRange) throws Exception {
+    public GetReportsResponse run(String view_id, List<DateRange> dateRange) throws Exception {
 
         Metric sessions = new Metric().setExpression("ga:sessions").setAlias("sessions");
         Metric newUser = new Metric().setExpression("ga:newUsers").setAlias("newUsers");
@@ -36,7 +36,7 @@ public class AnalyticsService {
         Dimension browser = new Dimension().setName("ga:browser");
         Dimension landingPage = new Dimension().setName("ga:landingPagePath");
 
-        return getReport(view_id, singletonList(dateRange), asList(sessions, newUser), singletonList(landingPage));
+        return getReport(view_id, dateRange, asList(sessions, newUser), singletonList(landingPage));
     }
 
     private GetReportsResponse getReport(String viewId, List<DateRange> dateRanges, List<Metric> metrics, List<Dimension> dimensions) throws IOException {

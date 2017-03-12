@@ -14,6 +14,8 @@ class ReportPrinter {
     public void print() {
         for (Report report : response.getReports()) {
 
+            //System.out.println("REPORT1 FOR:" + report);
+
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
             List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
@@ -25,13 +27,11 @@ class ReportPrinter {
             }
 
             for (String dimensionHeader : dimensionHeaders) {
-                System.out.print(dimensionHeader + " | ");
+                System.out.print(dimensionHeader + " , ");
             }
 
-            System.out.print(" --  | ");
-
             for (MetricHeaderEntry metricHeader : metricHeaders) {
-                System.out.print(metricHeader.getName() + " | ");
+                System.out.print(metricHeader.getName() + " , ");
             }
 
             System.out.println();
@@ -43,17 +43,14 @@ class ReportPrinter {
                 System.out.println();
 
                 for (int i = 0; i < dimensions.size(); i++) {
-                    System.out.print(dimensions.get(i) + " | ");
+                    System.out.print(dimensions.get(i) + " , ");
                 }
-
-                System.out.print(" --  | ");
-
 
                 for (int j = 0; j < metrics.size(); j++) {
                     //System.out.print("Date Range (" + j + "): ");
                     DateRangeValues values = metrics.get(j);
                     for (int k = 0; k < values.getValues().size(); k++) {
-                        System.out.print(values.getValues().get(k) + " | ");
+                        System.out.print(values.getValues().get(k) + " , ");
                     }
                 }
 
