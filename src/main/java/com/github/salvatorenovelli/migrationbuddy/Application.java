@@ -1,3 +1,6 @@
+
+package com.github.salvatorenovelli.migrationbuddy;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;

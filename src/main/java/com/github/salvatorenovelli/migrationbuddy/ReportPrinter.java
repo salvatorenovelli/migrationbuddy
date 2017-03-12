@@ -1,3 +1,5 @@
+package com.github.salvatorenovelli.migrationbuddy;
+
 import com.google.api.services.analyticsreporting.v4.model.*;
 
 import java.util.List;
