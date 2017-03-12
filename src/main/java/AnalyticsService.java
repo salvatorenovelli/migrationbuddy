@@ -1,10 +1,10 @@
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
 import com.google.api.services.analyticsreporting.v4.model.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,21 +12,21 @@ import java.util.Arrays;
 public class AnalyticsService {
 
     private static final String VIEW_ID = "93074237";
-    private final File clientSecretJson;
+    private final Credential credential;
+    private final JsonFactory jsonFactory;
     private AnalyticsReporting analyticsReporting;
 
-    public AnalyticsService(File clientSecretJson) throws Exception {
-        this.clientSecretJson = clientSecretJson;
+    public AnalyticsService(Credential credential, JsonFactory jsonFactory) throws Exception {
+        this.credential = credential;
+        this.jsonFactory = jsonFactory;
     }
 
     public void init() throws Exception {
-        Credential credential = new GoogleAnalyticsCredentialFactory(clientSecretJson).authorize();
         analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
     public GetReportsResponse run() throws Exception {
-        GetReportsResponse response = getReport(analyticsReporting);
-        return response;
+        return getReport(analyticsReporting);
     }
 
     private GetReportsResponse getReport(AnalyticsReporting service) throws IOException {
@@ -69,7 +69,7 @@ public class AnalyticsService {
 
     private AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, credential).setApplicationName(Constants.APPLICATION_NAME).build();
+        return new AnalyticsReporting.Builder(httpTransport, jsonFactory, credential).setApplicationName(Constants.APPLICATION_NAME).build();
     }
 
 }
