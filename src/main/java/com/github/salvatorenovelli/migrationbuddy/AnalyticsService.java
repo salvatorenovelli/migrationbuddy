@@ -28,11 +28,7 @@ public class AnalyticsService {
         analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
-    public GetReportsResponse run(String view_id) throws Exception {
-
-        DateRange dateRange = new DateRange();
-        dateRange.setStartDate("30DaysAgo");
-        dateRange.setEndDate("today");
+    public GetReportsResponse run(String view_id, DateRange dateRange) throws Exception {
 
         Metric sessions = new Metric().setExpression("ga:sessions").setAlias("sessions");
         Metric newUser = new Metric().setExpression("ga:newUsers").setAlias("newUsers");
