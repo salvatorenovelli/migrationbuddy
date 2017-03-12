@@ -6,39 +6,31 @@ import com.google.api.services.analyticsreporting.v4.model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HelloAnalyticsReporting {
+public class AnalyticsService {
 
     private static final String VIEW_ID = "93074237";
+    private final File clientSecretJson;
+    private Credential credential;
 
-
-    public static void main(String[] args) {
-        try {
-
-            Credential credential = new GoogleAnalyticsCredentialFactory(new File(args[0])).authorize();
-            AnalyticsReporting service = initializeAnalyticsReporting(credential);
-            GetReportsResponse response = getReport(service);
-            printResponse(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public AnalyticsService(File clientSecretJson) throws Exception {
+        this.clientSecretJson = clientSecretJson;
     }
 
+    public void init() throws Exception {
+        credential = new GoogleAnalyticsCredentialFactory(clientSecretJson).authorize();
+    }
 
-    /**
-     * Query the Analytics Reporting API V4.
-     * Constructs a request for the sessions for the past seven days.
-     * Returns the API response.
-     *
-     * @param service
-     * @return GetReportResponse
-     * @throws IOException
-     */
-    private static GetReportsResponse getReport(AnalyticsReporting service) throws IOException {
+    public void run() throws Exception {
+        AnalyticsReporting service = initializeAnalyticsReporting(credential);
+        GetReportsResponse response = getReport(service);
+        printResponse(response);
+    }
+
+    private GetReportsResponse getReport(AnalyticsReporting service) throws IOException {
         // Create the DateRange object.
         DateRange dateRange = new DateRange();
         dateRange.setStartDate("30DaysAgo");
@@ -76,12 +68,7 @@ public class HelloAnalyticsReporting {
         return response;
     }
 
-    /**
-     * Parses and prints the Analytics Reporting API V4 response.
-     *
-     * @param response the Analytics Reporting API V4 response.
-     */
-    private static void printResponse(GetReportsResponse response) {
+    private void printResponse(GetReportsResponse response) {
 
         for (Report report : response.getReports()) {
 
@@ -133,14 +120,7 @@ public class HelloAnalyticsReporting {
         }
     }
 
-    /**
-     * Initializes an authorized Analytics Reporting service object.
-     *
-     * @return The analytics reporting service object.
-     * @throws IOException
-     * @throws GeneralSecurityException
-     */
-    private static AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
+    private AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
 
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
