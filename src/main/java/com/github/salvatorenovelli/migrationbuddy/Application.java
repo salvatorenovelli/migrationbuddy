@@ -1,4 +1,3 @@
-
 package com.github.salvatorenovelli.migrationbuddy;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -15,7 +14,7 @@ public class Application {
         Credential credentials = new GoogleAnalyticsCredentialFactory(new File(args[0]), jacksonFactory).authorize();
         AnalyticsService analyticsService = new AnalyticsService(credentials, jacksonFactory);
         analyticsService.init();
-        GetReportsResponse report = analyticsService.run();
+        GetReportsResponse report = analyticsService.run("93074237");
         new ReportPrinter(report).print();
     }
 }

@@ -8,12 +8,13 @@ import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
 import com.google.api.services.analyticsreporting.v4.model.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class AnalyticsService {
 
-    private static final String VIEW_ID = "93074237";
     private final Credential credential;
     private final JsonFactory jsonFactory;
     private AnalyticsReporting analyticsReporting;
@@ -27,46 +28,32 @@ public class AnalyticsService {
         analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
-    public GetReportsResponse run() throws Exception {
-        return getReport(analyticsReporting);
-    }
+    public GetReportsResponse run(String view_id) throws Exception {
 
-    private GetReportsResponse getReport(AnalyticsReporting service) throws IOException {
-        // Create the DateRange object.
         DateRange dateRange = new DateRange();
         dateRange.setStartDate("30DaysAgo");
         dateRange.setEndDate("today");
 
-        // Create the Metrics object.
-        Metric sessions = new Metric()
-                .setExpression("ga:sessions")
-                .setAlias("sessions");
-
+        Metric sessions = new Metric().setExpression("ga:sessions").setAlias("sessions");
         Metric newUser = new Metric().setExpression("ga:newUsers").setAlias("newUsers");
 
-        //Create the Dimensions object.
         Dimension browser = new Dimension().setName("ga:browser");
         Dimension landingPage = new Dimension().setName("ga:landingPagePath");
 
-        // Create the ReportRequest object.
+        return getReport(view_id, singletonList(dateRange), asList(sessions, newUser), singletonList(landingPage));
+    }
+
+    private GetReportsResponse getReport(String viewId, List<DateRange> dateRanges, List<Metric> metrics, List<Dimension> dimensions) throws IOException {
+
         ReportRequest request = new ReportRequest()
-                .setViewId(VIEW_ID)
-                .setDateRanges(Arrays.asList(dateRange))
-                .setDimensions(Arrays.asList(landingPage))
-                .setMetrics(Arrays.asList(sessions, newUser));
+                .setViewId(viewId)
+                .setDateRanges(dateRanges)
+                .setDimensions(dimensions)
+                .setMetrics(metrics);
 
-        ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
-        requests.add(request);
+        GetReportsRequest getReport = new GetReportsRequest().setReportRequests(singletonList(request));
 
-        // Create the GetReportsRequest object.
-        GetReportsRequest getReport = new GetReportsRequest()
-                .setReportRequests(requests);
-
-        // Call the batchGet method.
-        GetReportsResponse response = service.reports().batchGet(getReport).execute();
-
-        // Return the response.
-        return response;
+        return analyticsReporting.reports().batchGet(getReport).execute();
     }
 
     private AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
