@@ -14,19 +14,19 @@ public class AnalyticsService {
 
     private static final String VIEW_ID = "93074237";
     private final File clientSecretJson;
-    private Credential credential;
+    private AnalyticsReporting analyticsReporting;
 
     public AnalyticsService(File clientSecretJson) throws Exception {
         this.clientSecretJson = clientSecretJson;
     }
 
     public void init() throws Exception {
-        credential = new GoogleAnalyticsCredentialFactory(clientSecretJson).authorize();
+        Credential credential = new GoogleAnalyticsCredentialFactory(clientSecretJson).authorize();
+        analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
     public void run() throws Exception {
-        AnalyticsReporting service = initializeAnalyticsReporting(credential);
-        GetReportsResponse response = getReport(service);
+        GetReportsResponse response = getReport(analyticsReporting);
         printResponse(response);
     }
 
@@ -121,10 +121,7 @@ public class AnalyticsService {
     }
 
     private AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
-
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
-        // Construct the Analytics Reporting service object.
-        return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, credential).setApplicationName(PlusSample.APPLICATION_NAME).build();
+        return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, credential).setApplicationName(Constants.APPLICATION_NAME).build();
     }
 }
