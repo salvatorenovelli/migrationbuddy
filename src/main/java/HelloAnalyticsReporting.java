@@ -1,8 +1,10 @@
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
 import com.google.api.services.analyticsreporting.v4.model.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -12,12 +14,14 @@ import java.util.List;
 public class HelloAnalyticsReporting {
 
     private static final String VIEW_ID = "93074237";
+    private GoogleAnalyticsCredentialFactory credentialFactory;
 
 
     public static void main(String[] args) {
         try {
-            AnalyticsReporting service = initializeAnalyticsReporting();
 
+            Credential credential = new GoogleAnalyticsCredentialFactory(new File(args[0])).authorize();
+            AnalyticsReporting service = initializeAnalyticsReporting(credential);
             GetReportsResponse response = getReport(service);
             printResponse(response);
         } catch (Exception e) {
@@ -25,20 +29,6 @@ public class HelloAnalyticsReporting {
         }
     }
 
-    /**
-     * Initializes an authorized Analytics Reporting service object.
-     *
-     * @return The analytics reporting service object.
-     * @throws IOException
-     * @throws GeneralSecurityException
-     */
-    private static AnalyticsReporting initializeAnalyticsReporting() throws Exception {
-
-        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
-        // Construct the Analytics Reporting service object.
-        return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, PlusSample.authorize()).setApplicationName(PlusSample.APPLICATION_NAME).build();
-    }
 
     /**
      * Query the Analytics Reporting API V4.
@@ -142,5 +132,20 @@ public class HelloAnalyticsReporting {
 
             }
         }
+    }
+
+    /**
+     * Initializes an authorized Analytics Reporting service object.
+     *
+     * @return The analytics reporting service object.
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
+    private static AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
+
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+        // Construct the Analytics Reporting service object.
+        return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, credential).setApplicationName(PlusSample.APPLICATION_NAME).build();
     }
 }
