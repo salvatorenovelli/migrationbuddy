@@ -14,7 +14,6 @@ import java.util.List;
 public class HelloAnalyticsReporting {
 
     private static final String VIEW_ID = "93074237";
-    private GoogleAnalyticsCredentialFactory credentialFactory;
 
 
     public static void main(String[] args) {

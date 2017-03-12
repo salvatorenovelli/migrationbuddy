@@ -20,7 +20,7 @@ import java.util.Arrays;
 public class GoogleAnalyticsCredentialFactory {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"), ".store/plus_sample");
+    private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"), ".store/" + Constants.APPLICATION_NAME);
 
     private final FileDataStoreFactory dataStoreFactory;
     private final HttpTransport httpTransport;
