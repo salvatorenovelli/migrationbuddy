@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class AnalyticsService {
 
@@ -25,9 +24,9 @@ public class AnalyticsService {
         analyticsReporting = initializeAnalyticsReporting(credential);
     }
 
-    public void run() throws Exception {
+    public GetReportsResponse run() throws Exception {
         GetReportsResponse response = getReport(analyticsReporting);
-        printResponse(response);
+        return response;
     }
 
     private GetReportsResponse getReport(AnalyticsReporting service) throws IOException {
@@ -68,60 +67,9 @@ public class AnalyticsService {
         return response;
     }
 
-    private void printResponse(GetReportsResponse response) {
-
-        for (Report report : response.getReports()) {
-
-            ColumnHeader header = report.getColumnHeader();
-            List<String> dimensionHeaders = header.getDimensions();
-            List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
-            List<ReportRow> rows = report.getData().getRows();
-
-            if (rows == null) {
-                System.out.println("No data found for " + VIEW_ID);
-                return;
-            }
-
-            for (String dimensionHeader : dimensionHeaders) {
-                System.out.print(dimensionHeader + " | ");
-            }
-
-            System.out.print(" --  | ");
-
-            for (MetricHeaderEntry metricHeader : metricHeaders) {
-                System.out.print(metricHeader.getName() + " | ");
-            }
-
-            System.out.println();
-
-            for (ReportRow row : rows) {
-                List<String> dimensions = row.getDimensions();
-                List<DateRangeValues> metrics = row.getMetrics();
-
-                System.out.println();
-
-                for (int i = 0; i < dimensions.size(); i++) {
-                    System.out.print(dimensions.get(i) + " | ");
-                }
-
-                System.out.print(" --  | ");
-
-
-                for (int j = 0; j < metrics.size(); j++) {
-                    //System.out.print("Date Range (" + j + "): ");
-                    DateRangeValues values = metrics.get(j);
-                    for (int k = 0; k < values.getValues().size(); k++) {
-                        System.out.print(values.getValues().get(k) + " | ");
-                    }
-                }
-
-
-            }
-        }
-    }
-
     private AnalyticsReporting initializeAnalyticsReporting(Credential credential) throws Exception {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         return new AnalyticsReporting.Builder(httpTransport, PlusSample.JSON_FACTORY, credential).setApplicationName(Constants.APPLICATION_NAME).build();
     }
+
 }

@@ -1,3 +1,5 @@
+import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
+
 import java.io.File;
 
 public class Application {
@@ -6,6 +8,7 @@ public class Application {
         AnalyticsService analyticsService = new AnalyticsService(new File(args[0]));
 
         analyticsService.init();
-        analyticsService.run();
+        GetReportsResponse report = analyticsService.run();
+        new ReportPrinter(report).print();
     }
 }
