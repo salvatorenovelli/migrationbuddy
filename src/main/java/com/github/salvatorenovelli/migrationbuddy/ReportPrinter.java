@@ -26,15 +26,9 @@ class ReportPrinter {
 
     private UrlStats toUrlstats(ReportRow reportRow) {
         List<String> dimensions = reportRow.getDimensions();
-
         List<String> values = reportRow.getMetrics().get(0).getValues();
         return new UrlStats(dimensions.get(0), Long.valueOf(values.get(0)), Long.valueOf(values.get(1)));
     }
-//
-//    private UrlStats toUrlstats(List<String> values) {
-//        return new UrlStats(values.get(0), Long.valueOf(values.get(1)), Long.valueOf(values.get(2)));
-//    }
-
 
     public void print() {
         for (Report report : response.getReports()) {

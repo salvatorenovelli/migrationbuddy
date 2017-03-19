@@ -14,10 +14,8 @@ import java.util.Map;
 
 public class Application {
 
-
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
-    private AnalyticsService analyticsService;
-
+    private final AnalyticsService analyticsService;
 
     public Application(File clientSecretJson) throws Exception {
         JsonFactory jacksonFactory = JacksonFactory.getDefaultInstance();
@@ -27,8 +25,6 @@ public class Application {
     }
 
     public static void main(String[] params) throws Exception {
-
-
         if (params.length > 0) {
             Application application = new Application(new File(params[0]));
             Map<String, UrlStats> urlStats = new UrlStatsService(application.analyticsService).getUrlStats("2017-02-01", "2017-02-28", "93074237");
